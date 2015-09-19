@@ -4,7 +4,8 @@
   "description": "Smart Living in IRKit",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/jiroor/yui/issues"
   },
-  "homepage": "https://github.com/jiroor/yui"
+  "homepage": "https://github.com/jiroor/yui",
+  "devDependencies": {
+    "julius": "0.0.6"
+  }
 }
