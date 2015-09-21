@@ -1,10 +1,12 @@
 var fs = require('fs');
-var async = require('neo-async');
 
+var async = require('neo-async');
 var Julius = require('julius');
 var VoiceText = require('voicetext');
 var wav = require('wav');
 var Speaker = require('speaker');
+
+var config = require('./config');
 
 var grammar, voiceText, speaker, reader;
 
@@ -21,7 +23,7 @@ function setting(next) {
   grammar.add('こんにちは');
   grammar.add('おやすみなさい');
 
-  voiceText = new VoiceText('<your api key>');
+  voiceText = new VoiceText(config.voiceText.apiKey);
 
   speaker = voiceText.speaker(voiceText.SPEAKER.SHOW);
 
@@ -54,11 +56,11 @@ function getWav(res, next) {
 }
 
 function saveWav(buf, next) {
-  fs.writeFile('./tmp.wav', buf, 'binary', next);
+  fs.writeFile(config.wav.path.play, buf, 'binary', next);
 }
 
 function readyWav(next) {
-  var file = fs.createReadStream('./tmp.wav');
+  var file = fs.createReadStream(config.wav.path.play);
   reader = new wav.Reader();
   reader.on('format', next.bind(null, null));
   file.pipe(reader);
