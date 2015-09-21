@@ -21,6 +21,10 @@
   },
   "homepage": "https://github.com/jiroor/yui",
   "devDependencies": {
-    "julius": "0.0.6"
+    "julius": "0.0.6",
+    "neo-async": "^1.5.0",
+    "speaker": "^0.2.5",
+    "voicetext": "0.0.5",
+    "wav": "^1.0.0"
   }
 }
