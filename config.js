@@ -1,14 +1,13 @@
 var requireDir = require('require-dir');
-var dir = requireDir('./config');
+var _ = require('lodash');
+var config = requireDir('./config');
 
-Object.keys(dir).forEach(function(key) {
-  var keyCamelCase = key.replace(/(_|\-)(.)/g, function(match, p1, p2) {
-    return p2.toUpperCase();
-  });
+Object.keys(config).forEach(function(key) {
+  var keyCamelCase = _.camelCase(key);
   if (key !== keyCamelCase) {
-    dir[keyCamelCase] = dir[key];
-    delete dir[key];
+    config[keyCamelCase] = config[key];
+    delete config[key];
   }
 });
 
-module.exports = dir;
+module.exports = config;
