@@ -4,6 +4,7 @@ var async = require('neo-async');
 
 var irkit = require('./lib/irkit');
 var julius = require('./lib/julius');
+var stdio = require('./lib/stdio');
 var store = require('./lib/store');
 var voiceText = require('./lib/voice-text');
 var util = require('./lib/util');
@@ -54,9 +55,18 @@ function learn() {
     },
 
     function(res, next) {
+      voiceText.speak(message.learn.name);
+      stdio.read('name: ', next.bind(null, null, res));
+    },
+
+    function(res, input, next) {
+      store.save({
+        name: input,
+        message: res
+      });
+
       paused = false;
       voiceText.speak(message.learn.end);
-      store.save(res);
     }
   ]);
 }

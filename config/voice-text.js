@@ -1,5 +1,5 @@
 var config = {
-  apiKey: '<your api key>',
+  apiKey; '<your api key>',
 
   message: {
     default: 'すみません、もう一度お願いします。',
@@ -9,7 +9,8 @@ var config = {
 
     learn: {
       start: '学習を始めます。',
-      end: '信号を検知しました。保存します。'
+      name: '信号を検知しました。名前を入力してください。',
+      end: '保存します。'
     }
   }
 };
