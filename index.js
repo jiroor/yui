@@ -1,7 +1,9 @@
 'use strict';
 
 var async = require('neo-async');
+var _ = require('lodash');
 
+var conversation = require('./lib/conversation');
 var irkit = require('./lib/irkit');
 var julius = require('./lib/julius');
 var stdio = require('./lib/stdio');
@@ -16,21 +18,26 @@ var message = config.voiceText.message;
 init();
 
 function init() {
+  conversation.compile(julius);
+
   julius.whenRecognized(recognized);
   julius.start();
 }
 
-function recognized(res, next) {
+function recognized(res) {
+  julius.pause();
+
   util.log(res);
   switch (res) {
-    case config.start:
-      voiceText.speak(message.start, next);
-      break;
     case config.learn:
       learn();
       break;
     default:
-      voiceText.speak(res);
+      var converse = conversation.converse(res);
+      var sentence = converse.out || res;
+      var next = converse.role ? julius[converse.role] : _.noop;
+      voiceText.speak(sentence, next);
+
       break;
   }
 }
