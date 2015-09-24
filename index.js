@@ -6,14 +6,14 @@ var _ = require('lodash');
 var conversation = require('./lib/conversation');
 var irkit = require('./lib/irkit');
 var julius = require('./lib/julius');
+var message = require('./lib/message');
 var stdio = require('./lib/stdio');
-var store = require('./lib/store');
 var voiceText = require('./lib/voice-text');
 var util = require('./lib/util');
 
 var config = require('./config');
 
-var message = config.voiceText.message;
+var confMessage = config.voiceText.message;
 
 init();
 
@@ -38,6 +38,8 @@ function recognized(res) {
       var next = converse.role ? julius[converse.role] : _.noop;
       voiceText.speak(sentence, next);
 
+      converse.messages && post(converse.messages);
+
       break;
   }
 }
@@ -45,7 +47,7 @@ function recognized(res) {
 function learn() {
   async.angelfall([
     function(cb) {
-      voiceText.speak(message.learn.start, cb);
+      voiceText.speak(confMessage.learn.start, cb);
     },
 
     function(cb) {
@@ -57,17 +59,25 @@ function learn() {
     },
 
     function(res, cb) {
-      voiceText.speak(message.learn.name);
+      voiceText.speak(confMessage.learn.name);
       stdio.read('name: ', cb.bind(null, null, res));
     },
 
     function(res, input, cb) {
-      store.save({
+      message.save({
         name: input,
         message: res
       });
 
-      voiceText.speak(message.learn.end);
+      voiceText.speak(confMessage.learn.end);
     }
   ]);
+}
+
+function post(messages) {
+  async.eachSeries(messages, function(data, next) {
+    setTimeout(function() {
+      irkit.messages(message.load(data.id), next);
+    }, data.delay);
+  });
 }

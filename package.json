@@ -24,7 +24,7 @@
     "julius": "0.0.6",
     "lodash": "^3.10.1",
     "neo-async": "^1.5.0",
-    "node-irkit": "0.0.0",
+    "node-irkit": "jiroor/node-irkit#9842820",
     "require-dir": "^0.3.0",
     "speaker": "^0.2.5",
     "voicetext": "0.0.5",
