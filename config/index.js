@@ -1,6 +1,6 @@
 var config = {
-  start: 'ゆい',
-  stop: 'ありがとう',
+  name: 'ゆい',
+
   learn: '学習始め'
 };
 

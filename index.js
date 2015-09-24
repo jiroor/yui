@@ -12,7 +12,6 @@ var util = require('./lib/util');
 var config = require('./config');
 
 var message = config.voiceText.message;
-var paused;
 
 init();
 
@@ -21,55 +20,47 @@ function init() {
   julius.start();
 }
 
-function recognized(res) {
+function recognized(res, next) {
   util.log(res);
   switch (res) {
     case config.start:
-      paused = false;
-      voiceText.speak(message.start);
-      break;
-    case config.stop:
-      paused = true;
-      voiceText.speak(message.stop);
+      voiceText.speak(message.start, next);
       break;
     case config.learn:
-      learn();
+      learn(next);
       break;
     default:
-      paused || voiceText.speak(res);
+      voiceText.speak(res, next);
       break;
   }
 }
 
-function learn() {
-  paused = true;
-
+function learn(next) {
   async.angelfall([
-    function(next) {
-      voiceText.speak(message.learn.start, next);
+    function(cb) {
+      voiceText.speak(message.learn.start, cb);
     },
 
-    function(next) {
-      irkit.messages(next.bind(null, null));
+    function(cb) {
+      irkit.messages(cb.bind(null, null));
     },
 
-    function(next) {
-      irkit.learn(next.bind(null, null));
+    function(cb) {
+      irkit.learn(cb.bind(null, null));
     },
 
-    function(res, next) {
+    function(res, cb) {
       voiceText.speak(message.learn.name);
-      stdio.read('name: ', next.bind(null, null, res));
+      stdio.read('name: ', cb.bind(null, null, res));
     },
 
-    function(res, input, next) {
+    function(res, input, cb) {
       store.save({
         name: input,
         message: res
       });
 
-      paused = false;
-      voiceText.speak(message.learn.end);
+      voiceText.speak(message.learn.end, next);
     }
   ]);
 }

@@ -4,7 +4,6 @@ var config = {
   message: {
     default: 'すみません、もう一度お願いします。',
 
-    stop: 'いえいえ、またいつでも呼んでください。',
     start: 'はい、なんでしょう。',
 
     learn: {
