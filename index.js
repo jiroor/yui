@@ -43,9 +43,12 @@ function recognized(res) {
 
 function learn() {
   paused = true;
-  voiceText.speak(message.learn.start);
 
   async.angelfall([
+    function(next) {
+      voiceText.speak(message.learn.start, next);
+    },
+
     function(next) {
       irkit.messages(next.bind(null, null));
     },
