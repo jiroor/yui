@@ -27,15 +27,15 @@ function recognized(res, next) {
       voiceText.speak(message.start, next);
       break;
     case config.learn:
-      learn(next);
+      learn();
       break;
     default:
-      voiceText.speak(res, next);
+      voiceText.speak(res);
       break;
   }
 }
 
-function learn(next) {
+function learn() {
   async.angelfall([
     function(cb) {
       voiceText.speak(message.learn.start, cb);
@@ -60,7 +60,7 @@ function learn(next) {
         message: res
       });
 
-      voiceText.speak(message.learn.end, next);
+      voiceText.speak(message.learn.end);
     }
   ]);
 }
