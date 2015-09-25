@@ -18,15 +18,18 @@ var confMessage = config.voiceText.message;
 init();
 
 function init() {
-  conversation.compile(julius);
+  async.angelfall([
+    conversation.compile.bind(null, julius),
 
-  julius.whenRecognized(recognized);
-  julius.start();
+    function(next) {
+      julius.whenRecognized(recognized);
+      julius.start();
+      next();
+    }
+  ]);
 }
 
 function recognized(res) {
-  julius.pause();
-
   util.log(res);
   switch (res) {
     case config.learn:
@@ -34,9 +37,8 @@ function recognized(res) {
       break;
     default:
       var converse = conversation.converse(res);
-      var sentence = converse.out || res;
       var next = converse.role ? julius[converse.role] : _.noop;
-      voiceText.speak(sentence, next);
+      voiceText.speak(converse.out, next);
 
       converse.messages && post(converse.messages);
 
@@ -69,7 +71,7 @@ function learn() {
         message: res
       });
 
-      voiceText.speak(confMessage.learn.end);
+      voiceText.speak(confMessage.learn.end, cb);
     }
   ]);
 }
@@ -77,7 +79,7 @@ function learn() {
 function post(messages) {
   async.eachSeries(messages, function(data, next) {
     setTimeout(function() {
-      irkit.messages(message.load(data.id), next);
-    }, data.delay);
+      irkit.messages(message.load(data.id).message, next);
+    }, data.delay || 0);
   });
 }
