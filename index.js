@@ -31,27 +31,27 @@ function init() {
 
 function recognized(res) {
   util.log(res);
-  switch (res) {
-    case config.learn:
-      learn();
-      break;
-    default:
-      var converse = conversation.converse(res);
-      var next = converse.role ? julius[converse.role] : _.noop;
-      voiceText.speak(converse.out, next);
 
-      converse.messages && post(converse.messages);
+  var converse = conversation.converse(res);
+  var next = getRoleAction(converse.role) || _.noop;
 
-      break;
-  }
+  voiceText.speak(converse.out, next);
+  converse.messages && post(converse.messages);
+}
+
+function getRoleAction(role) {
+  switch (role) {
+    case 'pause':
+      return julius.pause;
+    case 'resume':
+      return julius.resume;
+    case 'learn':
+      return learn;
+  };
 }
 
 function learn() {
   async.angelfall([
-    function(cb) {
-      voiceText.speak(confMessage.learn.start, cb);
-    },
-
     function(cb) {
       irkit.messages(cb.bind(null, null));
     },

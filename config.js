@@ -10,7 +10,4 @@ Object.keys(config).forEach(function(key) {
   }
 });
 
-config = _.merge(config.index, config);
-delete config.index;
-
 module.exports = config;
