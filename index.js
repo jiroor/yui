@@ -17,6 +17,9 @@ var confMessage = config.voiceText.message;
 
 init();
 
+/**
+ * エントリーポイント
+ */
 function init() {
   async.angelfall([
     conversation.compile.bind(null, julius),
@@ -29,6 +32,10 @@ function init() {
   ]);
 }
 
+/**
+ * juliusが音声を認識した際に呼び出される関数
+ * @param {string} res 認識した音声の文字列
+ */
 function recognized(res) {
   util.log(res);
 
@@ -39,6 +46,11 @@ function recognized(res) {
   converse.messages && post(converse.messages);
 }
 
+/**
+ * 役割に応じた動作を行う関数を返す
+ * @param {string} role pause|resume|learn
+ * @return {function}
+ */
 function getRoleAction(role) {
   switch (role) {
     case 'pause':
@@ -50,9 +62,13 @@ function getRoleAction(role) {
   };
 }
 
+/**
+ * リモコンの信号を学習する
+ */
 function learn() {
   async.angelfall([
     function(cb) {
+      // 一度取得して信号を削除する
       irkit.messages(cb.bind(null, null));
     },
 
@@ -76,6 +92,10 @@ function learn() {
   ]);
 }
 
+/**
+ * IRKitにmessageを飛ばす
+ * @param {object[]} messages
+ */
 function post(messages) {
   async.eachSeries(messages, function(data, next) {
     setTimeout(function() {
